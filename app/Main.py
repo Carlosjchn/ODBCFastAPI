@@ -7,6 +7,10 @@ from sqlalchemy import create_engine, text
 
 # pip freeze > requirements.txt
 
+        ##############
+        #   mariadb  #
+        ##############
+
 config = {
     "host": "localhost",
     "port": 3306,
@@ -27,7 +31,7 @@ config = {
 #         result = cursor.fetchall()
 #     except mariadb.Error as e:
 #         print(f"Error connecting to MariaDB: {e}")
-#     finally:
+#     finally://
 #         if cursor:
 #             cursor.close()
 #         if conn:
@@ -35,10 +39,10 @@ config = {
 #         print("Connection closed")
 #     return result
 
-##############
-# jaydebeapi #
-##############
-    
+        ##############
+        # jaydebeapi #
+        ##############
+
 conn = jaydebeapi.connect(
     "org.mariadb.jdbc.Driver",
     "jdbc:mariadb://localhost:3306/Peliculas_JDBC",
@@ -53,9 +57,9 @@ print(result)
 print(type(result))
 
 
-##############
-# SQLalchemy #
-##############
+        ##############
+        # SQLalchemy #
+        ##############
 
 # engine = create_engine("mariadb+mariadbconnector://<user>:<password>@<host>[:<port>]/<dbname>")
 engine = create_engine("mariadb+mariadbconnector://root:12345@localhost:3306/Peliculas_JDBC")
@@ -67,9 +71,9 @@ print(result_sqlal)
 print(type(result_sqlal))
 
 
-#######
-# API #    
-#######
+        #######
+        # API #    
+        #######
 
 app = FastAPI()
 @app.get("/")
