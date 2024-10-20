@@ -5,6 +5,7 @@ import mariadb
 from sqlalchemy import create_engine, text
 
 
+
 # pip freeze > requirements.txt
 
         ##############
@@ -75,8 +76,23 @@ print(type(result_sqlal))
         # API #    
         #######
 
-app = FastAPI()
-@app.get("/")
+app = FastAPI(
+    title="My Awesome API",
+    description="This is an awesome API built with FastAPI.",
+    version="1.0.0",
+    terms_of_service="https://example.com/terms/",
+    contact={
+        "name": "Support Team",
+        "url": "https://example.com/contact",
+        "email": "support@example.com",
+    },
+    license_info={
+        "name": "MIT License",
+        "url": "https://opensource.org/licenses/MIT",
+    },
+)
+
+@app.get("/prueba")
 async def read_root():
     return str(result_sqlal)
     # return result
