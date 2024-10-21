@@ -1,16 +1,25 @@
 from fastapi import FastAPI
-import jaydebeapi
 import pydantic
+import jaydebeapi
 import mariadb
 from sqlalchemy import create_engine, text
+import asyncio
+from fastapi import FastAPI, HTTPException, Depends
+from fastapi.concurrency import run_in_threadpool
+
+
+# Your database configuration
+
+
+# Synchronous function to execute queries
 
 
 
 # pip freeze > requirements.txt
 
-        ##############
-        #   mariadb  #
-        ##############
+##############
+#   mariadb  #
+##############
 
 config = {
     "host": "localhost",
@@ -20,29 +29,41 @@ config = {
     "database": "Peliculas_JDBC",
 }
 
-# def execute_query(query):
-#     result = None 
-#     conn = None  
-#     cursor = None  
+
+
+def execute_query_sync(query):
+    try:
+        conn = mariadb.connect(**config)
+        cursor = conn.cursor()
+        cursor.execute(query)
+        results = cursor.fetchall()
+        conn.close()
+        return results
+    except mariadb.Error as e:
+        print(f"Error: {e}")
+        return None
+
+# Async function to call the synchronous query function
+
+async def execute_query(query: str):
+    return await run_in_threadpool(execute_query_sync, query)
+
+# def execute_query_sync(query):
 #     try:
 #         conn = mariadb.connect(**config)
 #         cursor = conn.cursor()
-#         print("Connected to MariaDB")
 #         cursor.execute(query)
-#         result = cursor.fetchall()
+#         results = cursor.fetchall()
+#         conn.close()
+#         return results
 #     except mariadb.Error as e:
-#         print(f"Error connecting to MariaDB: {e}")
-#     finally://
-#         if cursor:
-#             cursor.close()
-#         if conn:
-#             conn.close()
-#         print("Connection closed")
-#     return result
+#         print(f"Error: {e}")
+#         return None
 
-        ##############
-        # jaydebeapi #
-        ##############
+
+##############
+# jaydebeapi #
+##############
 
 conn = jaydebeapi.connect(
     "org.mariadb.jdbc.Driver",
@@ -58,9 +79,9 @@ print(result)
 print(type(result))
 
 
-        ##############
-        # SQLalchemy #
-        ##############
+##############
+# SQLalchemy #
+##############
 
 # engine = create_engine("mariadb+mariadbconnector://<user>:<password>@<host>[:<port>]/<dbname>")
 engine = create_engine("mariadb+mariadbconnector://root:12345@localhost:3306/Peliculas_JDBC")
@@ -72,9 +93,9 @@ print(result_sqlal)
 print(type(result_sqlal))
 
 
-        #######
-        # API #    
-        #######
+#######
+# API #    
+#######
 
 app = FastAPI(
     title="My Awesome API",
@@ -94,8 +115,16 @@ app = FastAPI(
 
 @app.get("/prueba")
 async def read_root():
+    return execute_query_sync("SELECT * FROM Peliculas")
+    return result
     return str(result_sqlal)
-    # return result
 
 
+@app.get("/items/")
+async def get_items():
+    query = "SELECT * FROM Peliculas"
+    results = await execute_query(query)
+    if results is None:
+        raise HTTPException(status_code=500, detail="Database query failed")
+    return {"items": results}
 
