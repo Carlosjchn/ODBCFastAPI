@@ -11,3 +11,4 @@ config = {
         "database": os.getenv("DATABASE_NAME")
     }
 
+print(os.getcwd())

@@ -1,9 +1,11 @@
 from fastapi.concurrency import run_in_threadpool
 import mariadb
+from .Config_bbdd import config as config_bbdd
+
 
 def execute_query_sync(query):
     try:
-        conn = mariadb.connect(**config)
+        conn = mariadb.connect(**config_bbdd)
         cursor = conn.cursor()
         cursor.execute(query)
         results = cursor.fetchall()

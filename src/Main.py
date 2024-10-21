@@ -13,7 +13,7 @@ app = FastAPI(
 
 @app.get("/items/" , tags=["Prueba"])
 async def get_items():
-    query = "SELECT * FROM Peliculas"
+    query = "SELECT * FROM usuario"
     results = await execute_query(query)
     if results is None:
         raise HTTPException(status_code=500, detail="Database query failed")
