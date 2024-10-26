@@ -4,11 +4,13 @@ from .routes.HorariosRouters import router2 as router_horarios
 
 
 app = FastAPI(
-    title="Gestor Horarios",
-    description="Esta API almacena los datos de los horarios de cada usuarios que"+
-                "pertenecen a equipos de trabajo, guardando los horarios personales de cada usuario.",
-    version="1.0.0",
-    
+    title="API Horarios",
+    description="---\n"
+    "Esta **API** almacena los datos de los horarios de cada usuarios que"+
+    "pertenecen a equipos de trabajo, guardando los horarios personales de cada usuario.\n"+
+    "\n" +
+    "---",
+    version="0.1.0",
 )
 
 
