@@ -1,5 +1,6 @@
 from fastapi import FastAPI, HTTPException
 from .routes.UsersRouters import router as router_usuario
+from .routes.HorariosRouters import router2 as router_horarios
 
 
 app = FastAPI(
@@ -14,7 +15,11 @@ app = FastAPI(
 # Async function to call the synchronous query function
 app.include_router(router_usuario, 
                    prefix="/Users",
-                   tags=["Users endpoints"],
+                   tags=["USERS ENDPOINTS"],
+                   )
+app.include_router(router_horarios, 
+                   prefix="/Horarios",
+                   tags=["HORARIOS ENDPOINTS"],
                    )
 
 
