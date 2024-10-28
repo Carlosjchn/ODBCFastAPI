@@ -1,10 +1,17 @@
+import enum
 from pydantic import BaseModel, Field
-from typing import Optional,List,Tuple,Dict
+from typing import Optional,List,Dict
 from ..models.HorarioModel import Horario, Horario_Default_Response
 
+class TipoEnum(str, enum.Enum):
+    admin = "Admin"
+    normal = "Normal"
+    jefe = "Jefe"
+    
+    
 class User(BaseModel):
     id_usuario: int
-    tipo: str
+    tipo: TipoEnum
     nombre: str
     email: str
     password: str
@@ -16,14 +23,13 @@ def User_Default_Response(results: List[tuple]) -> List[User]:
 
 class UserDetails(BaseModel):
     id_usuario: int
-    tipo: str
+    tipo: TipoEnum
     nombre: str
     email: str
     password: str
     id_equipo: Optional[int] = Field(default=None)
     # equipo: Optional[str] = Field(default=None)
     horarios: Optional[List[Horario]] = Field(default=None)
-    
     
 
 
@@ -34,6 +40,11 @@ def User_Details_Response(user_results: List[tuple]) -> List[UserDetails]:
         # Descomponer la fila en un diccionario
         row_dict = dict(zip(
             ("id_usuario", "tipo", "nombre", "email", "password", "id_equipo",
+            "id_equipo_e",
+            "tipo",
+            "nombre",
+            "horas_inicio_act" ,
+            "hora_fin_act",
              "id_usuario_h","id_horario", "fecha", "hora_inicio", "hora_fin"), row))
         
         # Obtener o crear el objeto UserDetails
@@ -62,6 +73,14 @@ def User_Details_Response(user_results: List[tuple]) -> List[UserDetails]:
 def extraer_horarios(row_dict, horarios_data):
     # Agregar el horario correspondiente a la lista
     if row_dict["id_horario"] is not None:
+            horarios_data.append((row_dict["id_usuario_h"],row_dict["id_horario"], row_dict["fecha"], row_dict["hora_inicio"], row_dict["hora_fin"]))
+            
+    # Convertir los horarios a objetos Horario usando el método Horario_Default_Response
+    horarios = Horario_Default_Response(horarios_data)
+    return horarios
+def extraer_equipos(row_dict, horarios_data):
+    # Agregar el horario correspondiente a la lista
+    if row_dict["id_equipo_e"] is not None:
             horarios_data.append((row_dict["id_usuario_h"],row_dict["id_horario"], row_dict["fecha"], row_dict["hora_inicio"], row_dict["hora_fin"]))
             
     # Convertir los horarios a objetos Horario usando el método Horario_Default_Response
