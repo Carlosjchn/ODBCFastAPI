@@ -12,15 +12,7 @@ class User(BaseModel):
     
 def User_Default_Response(results: List[tuple]) -> List[User]:
     return [User(**dict(zip(("id_usuario", "tipo", "nombre", "email", "password", "id_equipo"), row))) for row in results]
-    user = []
-    for row in results:
-        user.append(User(id_usuario=row[0], 
-                         tipo=row[1], 
-                         nombre=row[2], 
-                         email=row[3], 
-                         password=row[4], 
-                         id_equipo=row[5] if row[5] is not None else None))
-    return user
+    
 
 class UserDetails(BaseModel):
     id_usuario: int
@@ -38,12 +30,11 @@ class UserDetails(BaseModel):
 def User_Details_Response(user_results: List[tuple]) -> List[UserDetails]:
     user_details_dict: Dict[int, UserDetails] = {}
     horarios_data = []
-
     for row in user_results:
         # Descomponer la fila en un diccionario
         row_dict = dict(zip(
-            ("id_usuario", "tipo", "nombre", "email", "password", "id_equipo", 
-             "id_horario", "fecha", "hora_inicio", "hora_fin"), row))
+            ("id_usuario", "tipo", "nombre", "email", "password", "id_equipo",
+             "id_usuario_h","id_horario", "fecha", "hora_inicio", "hora_fin"), row))
         
         # Obtener o crear el objeto UserDetails
         id_usuario = row_dict["id_usuario"]
@@ -59,12 +50,7 @@ def User_Details_Response(user_results: List[tuple]) -> List[UserDetails]:
                 horarios=[]  # Inicializar como lista vacía
             )
         
-        # Agregar el horario correspondiente a la lista
-        if row_dict["id_horario"] is not None:
-            horarios_data.append((row_dict["id_horario"], id_usuario, row_dict["fecha"], row_dict["hora_inicio"], row_dict["hora_fin"]))
-
-    # Convertir los horarios a objetos Horario usando el método Horario_Default_Response
-    horarios = Horario_Default_Response(horarios_data)
+        horarios = extraer_horarios(row_dict, horarios_data)
 
     # Asignar los horarios a cada UserDetails
     for user in user_details_dict.values():
@@ -73,6 +59,12 @@ def User_Details_Response(user_results: List[tuple]) -> List[UserDetails]:
     # Retornar la lista de UserDetails
     return list(user_details_dict.values())
 
-
-
+def extraer_horarios(row_dict, horarios_data):
+    # Agregar el horario correspondiente a la lista
+    if row_dict["id_horario"] is not None:
+            horarios_data.append((row_dict["id_usuario_h"],row_dict["id_horario"], row_dict["fecha"], row_dict["hora_inicio"], row_dict["hora_fin"]))
+            
+    # Convertir los horarios a objetos Horario usando el método Horario_Default_Response
+    horarios = Horario_Default_Response(horarios_data)
+    return horarios
 

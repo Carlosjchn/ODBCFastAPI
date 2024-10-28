@@ -1,4 +1,3 @@
--- Crear la base de datos si no existe
 CREATE DATABASE IF NOT EXISTS HorariosAPP;
 
 -- Seleccionar la base de datos que acabamos de crear
@@ -7,7 +6,7 @@ USE HorariosAPP;
 -- Crear tabla Equipos
 CREATE TABLE IF NOT EXISTS Equipos (
     id_equipo INT AUTO_INCREMENT PRIMARY KEY,
-    tipo ENUM('Normal', 'Jefe', 'Admin') NOT NULL,
+    tipo VARCHAR(100) NOT NULL,
     nombre VARCHAR(100) NOT NULL,
     horas_inicio_act TIME,
     hora_fin_act TIME
@@ -34,25 +33,51 @@ CREATE TABLE IF NOT EXISTS Horarios (
     FOREIGN KEY (id_usuario) REFERENCES Usuario(id_usuario) ON DELETE CASCADE
 ) ENGINE=InnoDB;
 
--- Insertar datos de ejemplo en la tabla Equipos
-INSERT INTO Equipos (tipo, nombre) VALUES
-  ('Normal', 'Equipo de Desarrollo'),
-  ('Jefe', 'Equipo de Gestión'),
-  ('Admin', 'Equipo de Administración');
 
--- Obtener los IDs de los equipos insertados
-SET @equipo_desarrollo = LAST_INSERT_ID();
-SET @equipo_gestion = LAST_INSERT_ID();
-SET @equipo_administracion = LAST_INSERT_ID();
+-- Insertar datos en la tabla Equipos
+INSERT INTO Equipos (tipo, nombre, horas_inicio_act, hora_fin_act) 
+VALUES 
+('Desarrollo', 'Equipo A', '08:00:00', '16:00:00'),
+('Marketing', 'Equipo B', '09:00:00', '17:00:00'),
+('Soporte', 'Equipo C', '10:00:00', '18:00:00'),
+('Ventas', 'Equipo D', '07:00:00', '15:00:00'),
+('Finanzas', 'Equipo E', '08:30:00', '16:30:00'),
+('Legal', 'Equipo F', '09:00:00', '17:00:00');
 
--- Insertar datos de ejemplo en la tabla Usuario
-INSERT INTO Usuario (tipo, nombre, email, contrasena, id_equipo) VALUES
-  ('Normal', 'Juan Pérez', 'juan@example.com', 'contraseña123', @equipo_desarrollo),
-  ('Jefe', 'María López', 'maria@example.com', 'contraseña456', @equipo_gestion),
-  ('Admin', 'Pedro Gómez', 'pedro@example.com', 'contraseña789', @equipo_administracion);
+-- Insertar datos en la tabla Usuario
+INSERT INTO Usuario (tipo, nombre, email, contrasena, id_equipo) 
+VALUES 
+('Admin', 'Carlos Pérez', 'carlos.perez@example.com', 'password123', 1),
+('Normal', 'Ana Gómez', 'ana.gomez@example.com', 'pass456', 2),
+('Normal', 'Luis Torres', 'luis.torres@example.com', 'secret789', 1),
+('Normal', 'María Sánchez', 'maria.sanchez@example.com', 'pass321', 3),
+('Admin', 'Raúl Ortega', 'raul.ortega@example.com', 'password456', 4),
+('Normal', 'Sofía Navarro', 'sofia.navarro@example.com', 'mypassword123', 2),
+('Normal', 'Javier Ruiz', 'javier.ruiz@example.com', 'secure456', 5),
+('Normal', 'Elena Martínez', 'elena.martinez@example.com', 'secretpass', 6),
+('Normal', 'Ricardo López', 'ricardo.lopez@example.com', 'topsecret789', 3),
+('Normal', 'Natalia Vargas', 'natalia.vargas@example.com', 'vargas456', 4);
 
--- Insertar datos de ejemplo en la tabla Horarios
-INSERT INTO Horarios (id_usuario, fecha, hora_inicio, hora_fin) VALUES
-  (LAST_INSERT_ID(), '2023-11-20', '09:00:00', '17:00:00'),
-  (LAST_INSERT_ID(), '2023-11-21', '08:00:00', '16:00:00'),
-  (LAST_INSERT_ID(), '2023-11-22', '10:00:00', '18:00:00');
+-- Insertar datos en la tabla Horarios
+INSERT INTO Horarios (id_usuario, fecha, hora_inicio, hora_fin) 
+VALUES 
+(1, '2024-10-30', '08:00:00', '16:00:00'),
+(2, '2024-10-30', '09:00:00', '17:00:00'),
+(3, '2024-10-31', '10:00:00', '18:00:00'),
+(4, '2024-11-01', '07:00:00', '15:00:00'),
+(1, '2024-11-02', '08:00:00', '12:00:00'),
+(5, '2024-11-02', '09:00:00', '17:00:00'),
+(6, '2024-11-03', '10:00:00', '16:00:00'),
+(7, '2024-11-03', '08:30:00', '17:30:00'),
+(8, '2024-11-04', '09:00:00', '18:00:00'),
+(9, '2024-11-04', '07:30:00', '16:30:00'),
+(10, '2024-11-05', '08:00:00', '15:00:00'),
+(1, '2024-11-05', '08:00:00', '14:00:00'),
+(2, '2024-11-06', '08:30:00', '15:30:00'),
+(3, '2024-11-06', '09:00:00', '17:00:00'),
+(4, '2024-11-07', '07:30:00', '14:30:00'),
+(5, '2024-11-07', '09:00:00', '17:00:00'),
+(6, '2024-11-08', '10:00:00', '16:00:00'),
+(7, '2024-11-08', '08:00:00', '15:00:00'),
+(8, '2024-11-09', '07:00:00', '15:00:00'),
+(9, '2024-11-09', '09:00:00', '17:00:00');
