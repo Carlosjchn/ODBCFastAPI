@@ -8,7 +8,7 @@ class Equipo(BaseModel):
     tipo: str
     nombre: str
     horas_inicio_act : time 
-    hora_fin_act: time
+    horas_fin_act: time
 
 def timedelta_to_time(td: timedelta) -> time:
     """Converts a timedelta to a time object."""
@@ -21,22 +21,24 @@ def timedelta_to_time(td: timedelta) -> time:
 def Equipo_Default_Response(results: List[tuple])-> List[Equipo]:
     Equipos = []
     for row in results:
-        row_dict = dict(zip("id_equipo","tipo","nombre","horas_inicio","horas_fin", row))
+        row_dict = dict(zip(("id_equipo", "tipo", "nombre", "horas_inicio_act", "horas_fin_act"), row))
 
-        if isinstance(row_dict["hora_inicio"],timedelta):
-            row_dict["hora_inicio"]=timedelta_to_time(row_dict["hora_inicio"])
-        if isinstance(row_dict["hora_fin"],timedelta):
-            row_dict["hora_fin"]=timedelta_to_time(row_dict["hora_fin"])
-            
-        return Equipos.append(Equipo(**row_dict))
-    
-        # equipo = Equipo(
-        #     id_equipo=row[0],
-        #     tipo=row[1],
-        #     nombre=row[2],
-        #     horas_inicio_act=timedelta_to_time(row[3]),
-        #     hora_fin_act=timedelta_to_time(row[4])
-        # )
-        # Equipos.append(equipo)
-    
+        if isinstance(row_dict["horas_inicio_act"], timedelta):
+            row_dict["horas_inicio_act"] = timedelta_to_time(row_dict["horas_inicio_act"])
+        if isinstance(row_dict["horas_fin_act"], timedelta):
+            row_dict["horas_fin_act"] = timedelta_to_time(row_dict["horas_fin_act"])
+
+        Equipos.append(Equipo(**row_dict))
+        
     return Equipos
+
+    #     equipo = Equipo(
+    #         id_equipo=row[0],
+    #         tipo=row[1],
+    #         nombre=row[2],
+    #         horas_inicio_act=timedelta_to_time(row[3]),
+    #         hora_fin_act=timedelta_to_time(row[4])
+    #     )
+    #     Equipos.append(equipo)
+    
+    # return Equipos

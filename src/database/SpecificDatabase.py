@@ -1,6 +1,7 @@
 from .GeneralDatabase import GeneralMethods 
 from ..models.UserModel import User_Default_Response, User_Details_Response
 from ..models.HorarioModel import Horario_Default_Response
+from ..models.EquipoModel import Equipo_Default_Response
 
 class UserMethods(GeneralMethods):
       
@@ -25,5 +26,10 @@ class HorariosMethods(GeneralMethods):
         allHorarios = await GeneralMethods.execute_query_async("SELECT h.* FROM horarios h")
         return Horario_Default_Response(allHorarios)
     
+    
+class EquiposMethods(GeneralMethods):
+    async def fetch_all_equipos():
+        allEquipos = await GeneralMethods.execute_query_async("SELECT e.* FROM equipos e")
+        return Equipo_Default_Response(allEquipos)
     
     
