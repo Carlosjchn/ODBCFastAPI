@@ -1,5 +1,5 @@
 from fastapi import APIRouter
-from ..services.UsersServices import get_all_users_service, get_user_byId_service, get_all_UserDetails_service, get_Details_byID_service
+from ..services.UsersServices import get_all_users_service, get_user_byId_service, get_all_UserDetails_service, get_Details_byID_service, get_all_info_details_service
 from ..models.UserModel import User, UserDetails
 
 
@@ -192,3 +192,8 @@ async def get_Details_ById_router(id: int):
     Información detallada del usuario correspondiente al ID proporcionado, incluyendo horarios, si están disponibles.
     """
     return await get_Details_byID_service(id)
+
+
+@router.get("/allInfoGlobal")
+async def get_all_info_details_router():
+    return await get_all_info_details_service()

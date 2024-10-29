@@ -17,3 +17,7 @@ async def get_all_UserDetails_service():
 async def get_Details_byID_service(userId:int):
     userDetails = await UserMethods.fetch_user_details_by_id(userId)
     return userDetails
+
+async def get_all_info_details_service():
+    allInfoDetails = await UserMethods.fetch_all_info_details()
+    return allInfoDetails
