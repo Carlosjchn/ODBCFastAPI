@@ -32,10 +32,20 @@ class UserDetails(BaseModel):
     equipo: Optional[List[Equipo]] = Field(default=None)
     horarios: Optional[List[Horario]] = Field(default=None)
     
+class UserBasicDetails(BaseModel):
+    id_usuario: int
+    tipo: TipoEnum
+    nombre: str
+    email: str
+    password: str
+    id_equipo: Optional[int] = Field(default=None)
+    # equipo: Optional[List[Equipo]] = Field(default=None)
+    horarios: Optional[List[Horario]] = Field(default=None)    
+    
 
 
-def User_Details_Response(user_results: List[tuple]) -> List[UserDetails]:
-    user_details_dict: Dict[int, UserDetails] = {}
+def User_Details_Response(user_results: List[tuple]) -> List[UserBasicDetails]:
+    user_details_list: List[UserBasicDetails] =  []
     horarios_data = []
     for row in user_results:
         # Descomponer la fila en un diccionario
@@ -46,8 +56,8 @@ def User_Details_Response(user_results: List[tuple]) -> List[UserDetails]:
         # Obtener o crear el objeto UserDetails
         id_usuario = row_dict["id_usuario"]
         
-        if id_usuario not in user_details_dict:
-            user_details_dict[id_usuario] = UserDetails(
+        if not any(user.id_usuario == id_usuario for user in user_details_list):
+            user_details_list.append(UserBasicDetails(
                 id_usuario=id_usuario,
                 tipo=row_dict["tipo"],
                 nombre=row_dict["nombre"],
@@ -55,16 +65,16 @@ def User_Details_Response(user_results: List[tuple]) -> List[UserDetails]:
                 password=row_dict["password"],
                 id_equipo=row_dict["id_equipo"],
                 horarios=[]  # Inicializar como lista vacía
-            )
+            ))
         
         horarios = extraer_horarios(row_dict, horarios_data)
 
     # Asignar los horarios a cada UserDetails
-    for user in user_details_dict.values():
+    for user in user_details_list:
         user.horarios = [h for h in horarios if h.id_usuario == user.id_usuario]
     
     # Retornar la lista de UserDetails
-    return list(user_details_dict.values())
+    return user_details_list
 
 
 def extraer_equipos(row_dict, equipos_data):

@@ -1,6 +1,6 @@
 from fastapi import APIRouter
 from ..services.UsersServices import get_all_users_service, get_user_byId_service, get_all_UserDetails_service, get_Details_byID_service, get_all_info_details_service
-from ..models.UserModel import User, UserDetails
+from ..models.UserModel import User, UserDetails, UserBasicDetails
 
 
 router = APIRouter()
@@ -122,7 +122,7 @@ async def get_user_byId_router(id: int):
             "description": "Error executing query."
         }
     },
-    response_model=list[UserDetails]
+    response_model=list[UserBasicDetails]
 )
 async def get_all_UserDetails_router():
     """
@@ -147,7 +147,7 @@ async def get_all_UserDetails_router():
             "description": "Successful operation.",
             "content": {
                 "application/json": {
-                    "example": {
+                    "example": [{
                         "id_usuario": "int",
                         "tipo": "tipo",
                         "nombre": "nombre_usuario",
@@ -160,9 +160,9 @@ async def get_all_UserDetails_router():
                                 "fecha": "YYYY-MM-DD",
                                 "hora_inicio": "HH:MM:SS",
                                 "hora_fin": "HH:MM:SS"
-                            }
+                            },
                         ]
-                    }
+                    }]
                 }
             },
         },
@@ -173,7 +173,7 @@ async def get_all_UserDetails_router():
             "description": "Error executing query."
         }
     },
-    response_model=UserDetails
+    response_model= list[UserBasicDetails]
 )
 async def get_Details_ById_router(id: int):
     """
@@ -194,6 +194,62 @@ async def get_Details_ById_router(id: int):
     return await get_Details_byID_service(id)
 
 
-@router.get("/allInfoGlobal")
+@router.get(
+    "/allInfoGlobal",
+    summary="Get all global information for users",
+    responses={
+        200: {
+            "description": "Successful operation.",
+            "content": {
+                "application/json": {
+                    "example": {
+                        "id_usuario": "int",
+                        "tipo": "tipo",
+                        "nombre": "nombre_usuario",
+                        "email": "correo_usuario@gmail.com",
+                        "password": "contraseña123",
+                        "id_equipo": "int",
+                        "equipo": [
+                            {
+                                "id_equipo": "int",
+                                "tipo": "tipo_equipo",
+                                "nombre": "nombre_equipo",
+                                "horas_inicio_act": "HH:MM:SS",
+                                "horas_fin_act": "HH:MM:SS"
+                            }
+                        ],
+                        "horarios": [
+                            {
+                                "id_horario": "int",
+                                "fecha": "YYYY-MM-DD",
+                                "hora_inicio": "HH:MM:SS",
+                                "hora_fin": "HH:MM:SS"
+                            }
+                        ]
+                    }
+                }
+            },
+        },
+        500: {
+            "description": "Error executing query."
+        }
+    },
+    response_model=list[UserDetails]
+)
 async def get_all_info_details_router():
+    """
+    ---
+    Método para consultar la información global completa de los usuarios en la base de datos de manera asincrónica.
+    
+    # Flujo del método:\n
+    1. `get_all_info_details_router()` -> Llama al servicio que obtiene toda la información relacionada con los usuarios, incluyendo detalles de equipo y horarios.\n
+    2. `get_all_info_details_service()` -> Procesa la solicitud y se comunica con los métodos de la base de datos.\n
+    3. **UserMethods**.`fetch_all_info_details()` -> Ejecuta la consulta en la base de datos y retorna los detalles completos de cada usuario, incluyendo la información de equipo y horarios.\n
+    --- 
+    ### Returns:\n    
+    Lista de todos los usuarios con su información completa, que incluye:
+    - Información básica de usuario.
+    - Detalles de equipo asociados, si existen.
+    - Información de horarios asignados, si están disponibles.
+    """
     return await get_all_info_details_service()
