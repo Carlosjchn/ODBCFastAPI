@@ -1,39 +1,160 @@
-from .GeneralDatabase import GeneralMethods 
-from ..models.UserModel import User_Default_Response, User_Details_Response, User_All_Info_Response
+from .GeneralDatabase import GeneralMethods
 from ..models.HorarioModel import Horario_Default_Response
 from ..models.EquipoModel import Equipo_Default_Response
+from .helpers.fetch.FetchUserHelper import (
+    get_response_processor,
+)
+
+#########################
+# Metodos para Usuarios #
+#########################
 
 class UserMethods(GeneralMethods):
-      
-    async def fetch_all_users():
-        allUsers = await GeneralMethods.execute_query_async("SELECT u.* FROM usuario u")  # Await the result
-        return User_Default_Response(allUsers)
     
-    async def fetch_user_by_id(userId):
-        User= await GeneralMethods.execute_query_async(f"SELECT u.* FROM usuario u WHERE u.id_usuario={userId}")
-        return User_Default_Response(User)
+    ############
+    #  FETCHS  #
+    ############
     
-    async def fetch_all_user_details():
-        AllUsersDetails= await GeneralMethods.execute_query_async("SELECT u.*, h.* FROM usuario u JOIN horarios h ON u.id_usuario = h.id_usuario")
-        return User_Details_Response(AllUsersDetails) 
+    @staticmethod
+    async def fetch_user_data(query: str, horarios: bool = False, full_info: bool = False):
+        # Ejecutar la consulta
+        results = await GeneralMethods.execute_query_async(query)
+        # Procesar y retornar la respuesta
+        response_processor = get_response_processor(horarios, full_info)
+        return response_processor(results)
+            
+    #############
+    #  INSERTS  #
+    #############
     
-    async def fetch_user_details_by_id(userId):
-        UserDetails= await GeneralMethods.execute_query_async(f"SELECT u.*, h.* FROM usuario u JOIN horarios h ON u.id_usuario = h.id_usuario WHERE u.id_usuario={userId}")
-        return User_Details_Response(UserDetails)
+    @staticmethod
+    async def insert_user(user_data):
+        query = """
+        INSERT INTO usuario (tipo, nombre, email, contrasena, id_equipo)
+        VALUES (?, ?, ?, ?, ?)
+        """
+        
+        await GeneralMethods.insert_data_async(query, user_data)
+        return {"message": "User inserted successfully"}
     
-    async def fetch_all_info_details():
-        UserAllInfo = await GeneralMethods.execute_query_async("SELECT u.*, e.* , h.* FROM usuario u JOIN equipos e ON u.id_equipo=e.id_equipo JOIN horarios h ON u.id_usuario = h.id_usuario")
-        return User_All_Info_Response(UserAllInfo)
+        
+
+    #############
+    #  UPDATES  #
+    #############
+    @staticmethod
+    async def update_user(query):
+        await GeneralMethods.update_data_async(query)
+        return {"message": "User updated successfully"}
+
+    #############
+    #  DELETES  #
+    #############    
+    @staticmethod
+    async def delete_user(query):
+        await GeneralMethods.delete_data_async(query)
+        return {"message": "Usuario eliminado exitosamente"}
+
+                   
+                   
+#########################
+# Metodos para Horarios #
+#########################
+
 
 class HorariosMethods(GeneralMethods):
+    
+    ############
+    #  FETCHS  #
+    ############
     async def fetch_all_horarios():
-        allHorarios = await GeneralMethods.execute_query_async("SELECT h.* FROM horarios h")
+        allHorarios = await GeneralMethods.execute_query_async(
+            "SELECT h.* FROM horarios h"
+        )
         return Horario_Default_Response(allHorarios)
+    @staticmethod
     
+    #############
+    #  INSERTS  #
+    #############
+    async def insert_horario(horario_data):
+        query = """
+        INSERT INTO horarios (id_usuario, fecha, hora_inicio, hora_fin)
+        VALUES (:id_usuario, :fecha, :hora_inicio, :hora_fin)
+        """
+        await GeneralMethods.insert_data_async(query, horario_data)
+        return {"message": "Horario inserted successfully"}
+
+    #############
+    #  UPDATES  #
+    #############
+    @staticmethod
+    async def update_horario(horarioId, horario_data):
+        query = """
+        UPDATE horarios
+        SET id_usuario = :id_usuario, fecha = :fecha, hora_inicio = :hora_inicio, hora_fin = :hora_fin
+        WHERE id_horario = :id_horario
+        """
+        horario_data["id_horario"] = horarioId
+        await GeneralMethods.update_data_async(query, horario_data)
+        return {"message": "Horario updated successfully"}
     
+    #############
+    #  DELETES  #
+    ############# 
+    @staticmethod
+    async def delete_horario(horarioId):
+        query = "DELETE FROM horarios WHERE id_horario = :id_horario"
+        await GeneralMethods.delete_data_async(query, {"id_horario": horarioId})
+        return {"message": "Horario deleted successfully"}
+    
+########################
+# Metodos para Equipos #
+########################
+
+
 class EquiposMethods(GeneralMethods):
+    
+    ############
+    #  FETCHS  #
+    ############
     async def fetch_all_equipos():
-        allEquipos = await GeneralMethods.execute_query_async("SELECT e.* FROM equipos e")
+        allEquipos = await GeneralMethods.execute_query_async(
+            "SELECT e.* FROM equipos e"
+        )
         return Equipo_Default_Response(allEquipos)
     
+    #############
+    #  INSERTS  #
+    #############
+    @staticmethod
+    async def insert_equipo(equipo_data):
+        query = """
+        INSERT INTO equipos (nombre_equipo, descripcion, horas_inicio_act, horas_fin_act)
+        VALUES (:nombre_equipo, :descripcion, :horas_inicio_act, :horas_fin_act)
+        """
+        await GeneralMethods.insert_data_async(query, equipo_data)
+        return {"message": "Equipo inserted successfully"}
+
+    #############
+    #  UPDATES  #
+    #############
+    @staticmethod
+    async def update_equipo(equipoId, equipo_data):
+        query = """
+        UPDATE equipos
+        SET nombre_equipo = :nombre_equipo, descripcion = :descripcion, horas_inicio_act = :horas_inicio_act, horas_fin_act = :horas_fin_act
+        WHERE id_equipo = :id_equipo
+        """
+        equipo_data["id_equipo"] = equipoId
+        await GeneralMethods.update_data_async(query, equipo_data)
+        return {"message": "Equipo updated successfully"}
     
+    #############
+    #  DELETES  #
+    ############# 
+    @staticmethod
+    async def delete_equipo(equipoId):
+        query = "DELETE FROM equipos WHERE id_equipo = :id_equipo"
+        await GeneralMethods.delete_data_async(query, {"id_equipo": equipoId})
+        return {"message": "Equipo deleted successfully"}
