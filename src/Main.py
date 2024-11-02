@@ -27,17 +27,17 @@ app.add_middleware(
 # Async function to call the synchronous query function
 app.include_router(
     router_usuario,
-    prefix="/Users",
+    prefix="/User",
     tags=["USERS ENDPOINTS"],
 )
 app.include_router(
     router_horarios,
-    prefix="/Horarios",
+    prefix="/Horario",
     tags=["HORARIOS ENDPOINTS"],
 )
 
 app.include_router(
     router_equipos,
-    prefix="/Equipos",
+    prefix="/Equipo",
     tags=["EQUIPOS ENDPOINTS"],
 )

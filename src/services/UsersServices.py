@@ -34,8 +34,8 @@ async def insert_user_service(
 ###############
 async def update_user_service(id_usuario: int, tipo: str = None, nombre: str = None, email: str = None, password: str = None, id_equipo: int = None):
     try:
-        query, params = build_update_query(id_usuario, tipo, nombre, email, password, id_equipo)
-        return await UserMethods.execute_update_query(query, params)
+        query = build_update_query(id_usuario, tipo, nombre, email, password, id_equipo)
+        return await UserMethods.update_user(query)
     except ValueError as e:
         return {"error": str(e)}
 

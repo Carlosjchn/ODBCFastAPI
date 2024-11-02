@@ -1,4 +1,5 @@
-from fastapi import APIRouter, HTTPException
+from datetime import time
+from fastapi import APIRouter, HTTPException, Query
 
 from ..services.EquipoService import get_all_equipos_service, insert_equipo_service
 
@@ -10,7 +11,7 @@ async def get_all_equipos_router():
     return await get_all_equipos_service()
 
 @router.post(
-    "/createEquipo",
+    "/create",
     summary="Crear un nuevo equipo",
     responses={
         200: {"description": "Equipo creado exitosamente."},
@@ -20,9 +21,9 @@ async def get_all_equipos_router():
 )
 async def create_equipo(
     nombre_equipo: str,
-    descripcion: str,
-    horas_inicio_act: str,
-    horas_fin_act: str,
+    tipo: str,
+    hora_inicio_actividad: time = Query(..., description="Hora de inicio del horario (HH:MM:SS)"),
+    hora_fin_actividad: time = Query(..., description="Hora de fin del horario (HH:MM:SS)")
 ):
     """
     ---
@@ -42,5 +43,5 @@ async def create_equipo(
     ### Returns:
     - Un mensaje de confirmación indicando si la inserción fue exitosa o si hubo algún error.
     """
-    return await insert_equipo_service(nombre_equipo, descripcion, horas_inicio_act, horas_fin_act)
+    return await insert_equipo_service(nombre_equipo, tipo, hora_inicio_actividad, hora_fin_actividad)
 

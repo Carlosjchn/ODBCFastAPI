@@ -1,3 +1,4 @@
+from datetime import date, time
 from ..database.SpecificDatabase import HorariosMethods
 
 
@@ -5,7 +6,7 @@ async def get_all_horarios_services():
     allHorarios = await HorariosMethods.fetch_all_horarios()
     return allHorarios
 
-async def insert_horario_service(id_usuario: int, fecha: str, hora_inicio: str, hora_fin: str):
+async def insert_horario_service(id_usuario: int, fecha: date, hora_inicio: str, hora_fin: time):
     horario_data = {
         "id_usuario": id_usuario,
         "fecha": fecha,

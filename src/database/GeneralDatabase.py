@@ -86,9 +86,9 @@ class GeneralMethods:
         except HTTPException as e:
             raise e
 
-    ####################
-    # actualizar datos #
-    ####################
+    ################
+    # update datos #
+    ################
     """
     EJEMPLO QUERY USO
     query = "UPDATE users SET email = :email, age = :age WHERE name = :name"

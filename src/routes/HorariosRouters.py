@@ -1,4 +1,5 @@
-from fastapi import APIRouter
+from datetime import date, time
+from fastapi import APIRouter, Query
 from ..services.HorariosServices import get_all_horarios_services, insert_horario_service
 
 router2 = APIRouter()
@@ -9,7 +10,7 @@ async def get_all_horarios_router():
     return await get_all_horarios_services()
 
 @router2.post(
-    "/createHorario",
+    "/create",
     summary="Crear un nuevo horario",
     responses={
         200: {"description": "Horario creado exitosamente."},
@@ -18,7 +19,10 @@ async def get_all_horarios_router():
     },
 )
 async def create_horario(
-    id_usuario: int, fecha: str, hora_inicio: str, hora_fin: str
+    id_usuario: int, 
+    fecha: date = Query(..., description="Fecha del horario (YYYY-MM-DD)"),
+    hora_inicio: time = Query(..., description="Hora de inicio del horario (HH:MM:SS)"),
+    hora_fin: time = Query(..., description="Hora de fin del horario (HH:MM:SS)")
 ):
     """
     ---
