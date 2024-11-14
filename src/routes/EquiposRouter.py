@@ -1,5 +1,7 @@
 from datetime import date, time
 from fastapi import APIRouter, HTTPException, Query
+
+from ..models.EquipoModel import Equipo
 from ..services.EquipoService import (
     delete_equipo_service,
     get_all_equipos_service,
@@ -10,8 +12,41 @@ from ..services.EquipoService import (
 router = APIRouter()
 
 
-@router.get("/all")
+@router.get(
+    "/all",
+    summary="Obtener todos los equipos",
+    responses={
+        200: {
+            "description": "Lista de equipos obtenida exitosamente.",
+            "content": {
+                "application/json": {
+                    "example": {
+                        "id_equipo": "int",
+                        "tipo": "tipo_equipo",
+                        "nombre": "nombre_equipo",
+                        "horas_inicio_act": "HH:MM:SS",
+                        "horas_fin_act": "HH:MM:SS",
+                    }
+                },
+            },
+        },
+        500: {"description": "Error al obtener los equipos."},
+    },
+    response_model= list[Equipo]
+)
 async def get_all_equipos_router():
+    """
+    ---
+    Endpoint para obtener todos los equipos registrados en la base de datos de manera asincrónica.
+
+    ### Flujo del método:
+    1. `get_all_equipos_router()` -> Llama al servicio para obtener todos los equipos.
+    2. `get_all_equipos_service()` -> Construye la consulta para seleccionar todos los equipos y llama al repositorio para ejecutar la consulta en la base de datos.
+    3. **EquipoMethods.**`get_all()` -> Ejecuta la consulta y devuelve los datos obtenidos.
+
+    ### Returns:
+    - Lista de todos los equipos registrados, incluyendo detalles de nombre, tipo y horas de actividad.
+    """
     return await get_all_equipos_service()
 
 
@@ -39,16 +74,16 @@ async def create_equipo(
     Endpoint para crear un nuevo equipo en la base de datos de manera asincrónica.
 
     ### Flujo del método:
-    1. `create_equipo(nombre_equipo, descripcion, horas_inicio_act, horas_fin_act)` -> Llama al servicio que crea un nuevo equipo en la base de datos.
-    2. `insert_equipo_service(nombre_equipo, descripcion, horas_inicio_act, horas_fin_act)` -> Procesa la solicitud y se comunica con la base de datos para insertar el equipo.
-    3. **EquipoMethods.**`insert_equipo(equipo_data)` -> Inserta los datos en la base de datos.
-    ---
+    1. `create_equipo(nombre_equipo, tipo, hora_inicio_actividad, hora_fin_actividad)` -> Llama al servicio para crear un nuevo equipo.
+    2. `insert_equipo_service(nombre_equipo, tipo, hora_inicio_actividad, hora_fin_actividad)` -> Construye la consulta de inserción y llama al repositorio para ejecutar la inserción en la base de datos.
+    3. **EquipoMethods.**`insert()` -> Ejecuta la consulta de inserción y devuelve el resultado de la operación.
+
     ### Parámetros:
     - **nombre_equipo** (str): Nombre del equipo.
-    - **descripcion** (str): Descripción del equipo.
-    - **horas_inicio_act** (str): Hora de inicio de actividades del equipo.
-    - **horas_fin_act** (str): Hora de fin de actividades del equipo.
-    ---
+    - **tipo** (str): Tipo o categoría del equipo.
+    - **hora_inicio_actividad** (time): Hora de inicio de actividades del equipo.
+    - **hora_fin_actividad** (time): Hora de fin de actividades del equipo.
+
     ### Returns:
     - Un mensaje de confirmación indicando si la inserción fue exitosa o si hubo algún error.
     """
@@ -61,8 +96,8 @@ async def create_equipo(
     "/update",
     summary="Actualizar un equipo existente",
     responses={
-        200: {"description": "equipo actualizado exitosamente."},
-        404: {"description": "equipo no encontrado."},
+        200: {"description": "Equipo actualizado exitosamente."},
+        404: {"description": "Equipo no encontrado."},
         500: {"description": "Error al actualizar el equipo."},
     },
 )
@@ -76,17 +111,23 @@ async def update_equipo(
     hora_fin_act: time = Query(None, description="Hora de fin del equipo (HH:MM:SS)"),
 ):
     """
+    ---
     Endpoint para actualizar un equipo existente en la base de datos de manera asincrónica.
+
+    ### Flujo del método:
+    1. `update_equipo(id_equipo, tipo, nombre, hora_inicio_act, hora_fin_act)` -> Llama al servicio para actualizar el equipo.
+    2. `update_equipo_service(id_equipo, tipo, nombre, hora_inicio_act, hora_fin_act)` -> Construye la consulta de actualización y llama al repositorio para ejecutar la actualización en la base de datos.
+    3. **EquipoMethods.**`update(query)` -> Ejecuta la consulta de actualización y devuelve el resultado de la operación.
 
     ### Parámetros:
     - **id_equipo** (int, opcional): ID del equipo a actualizar.
-    - **id_usuario** (int, opcional): ID del usuario asociado al equipo.
-    - **fecha** (str, opcional): Nueva fecha del equipo (YYYY-MM-DD).
-    - **hora_inicio** (str, opcional): Nueva hora de inicio del equipo (HH:MM:SS).
-    - **hora_fin** (str, opcional): Nueva hora de fin del equipo (HH:MM:SS).
+    - **tipo** (str, opcional): Nuevo tipo o categoría del equipo.
+    - **nombre** (str, opcional): Nuevo nombre del equipo.
+    - **hora_inicio_act** (time, opcional): Nueva hora de inicio de actividades del equipo.
+    - **hora_fin_act** (time, opcional): Nueva hora de fin de actividades del equipo.
 
     ### Returns:
-    - Resultado de la operación, indicando éxito o algún error.
+    - Resultado de la operación, indicando si la actualización fue exitosa o si hubo algún error.
     """
     return await update_equipo_service(
         id_equipo, tipo, nombre, hora_inicio_act, hora_fin_act
@@ -97,19 +138,25 @@ async def update_equipo(
     "/delete",
     summary="Eliminar un equipo",
     responses={
-        200: {"description": "equipo eliminado exitosamente."},
-        404: {"description": "equipo no encontrado."},
+        200: {"description": "Equipo eliminado exitosamente."},
+        404: {"description": "Equipo no encontrado."},
         500: {"description": "Error al eliminar el equipo."},
     },
 )
 async def delete_equipo(id_equipo: int):
     """
+    ---
     Endpoint para eliminar un equipo de la base de datos de manera asincrónica.
+
+    ### Flujo del método:
+    1. `delete_equipo(id_equipo)` -> Llama al servicio que elimina el equipo según el ID proporcionado.
+    2. `delete_equipo_service(id_equipo)` -> Construye la consulta de eliminación y llama al repositorio para ejecutar la eliminación en la base de datos.
+    3. **EquipoMethods.**`delete(id_equipo)` -> Ejecuta la consulta de eliminación y devuelve el resultado de la operación.
 
     ### Parámetros:
     - **id_equipo** (int): ID del equipo a eliminar.
 
     ### Returns:
-    - Resultado de la operación, indicando éxito o algún error.
+    - Resultado de la operación, indicando si el equipo fue eliminado con éxito o si hubo algún error.
     """
     return await delete_equipo_service(id_equipo)

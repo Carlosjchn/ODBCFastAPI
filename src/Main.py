@@ -4,6 +4,7 @@ from .routes.HorariosRouters import router2 as router_horarios
 from .routes.EquiposRouter import router as router_equipos
 from fastapi.middleware.cors import CORSMiddleware
 
+
 app = FastAPI(
     title="API Horarios",
     description="---\n"
@@ -15,21 +16,13 @@ app = FastAPI(
 )
 
 
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=["*"],  # Puedes limitarlo a ["http://localhost:19006"] para Expo
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
 
-
-# Async function to call the synchronous query function
 app.include_router(
     router_usuario,
     prefix="/User",
     tags=["USERS ENDPOINTS"],
 )
+
 app.include_router(
     router_horarios,
     prefix="/Horario",

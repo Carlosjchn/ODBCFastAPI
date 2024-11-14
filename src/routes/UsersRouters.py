@@ -1,16 +1,14 @@
 from typing import Union
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, HTTPException, Query
 from ..services.UsersServices import (
     delete_user_service,
     get_user_data_services,
     insert_user_service,
     update_user_service,
 )
-from ..models.UserModel import User, UserDetails, UserBasicDetails
-
+from ..models.UserModel import TipoUser, User, UserDetails, UserBasicDetails
 
 router = APIRouter()
-
 
 @router.get(
     "/getUserData",
@@ -128,7 +126,7 @@ async def get_user_data_router(
     },
 )
 async def create_user(
-    tipo: str, nombre: str, email: str, password: str, id_equipo: int = None
+    tipo: TipoUser, nombre: str, email: str, password: str, id_equipo: int = None
 ):
     """
     ---
@@ -192,6 +190,7 @@ async def update_user_router(
     """
     return await update_user_service(id_usuario, tipo, nombre, email, password, id_equipo)
 
+
 @router.delete(
     "/delete",
     summary="Eliminar un usuario por su ID o nombre",
@@ -209,14 +208,14 @@ async def delete_user_router(id_usuario: int = None, nombre: str = None):
 
     # Flujo del método:\n
     1. `delete_user_router(id_usuario, nombre)` -> Llama al servicio que elimina al usuario según el ID o nombre proporcionado.\n
-    2. `delete_user_service(id_usuario, nombre)` -> Procesa la solicitud y se comunica con los métodos de la base de datos para eliminar al usuario.\n
+    2. `delete_user_service(id_usuario, nombre)` -> Procesa la solicitud y se comunica con los métodos de la base de datos para ejecutar la eliminación.\n
     3. **UserMethods.**`delete_user(id_usuario, nombre)` -> Ejecuta la consulta de eliminación en la base de datos.\n
     ---
     ### Parámetros:\n
-    - **id_usuario** (int, optional): ID del usuario que se desea eliminar.\n
-    - **nombre** (str, optional): Nombre del usuario que se desea eliminar.\n
+    - **id_usuario** (int, optional): ID del usuario a eliminar. Si no se proporciona, se debe especificar el nombre.\n
+    - **nombre** (str, optional): Nombre del usuario a eliminar. Si no se proporciona, se debe especificar el ID.\n
     ---
     ### Returns:\n
-    Resultado de la operación, indicando si el usuario fue eliminado con éxito o si hubo algún error.
+    Resultado de la operación, indicando si la eliminación del usuario fue exitosa o si hubo algún error.
     """
     return await delete_user_service(id_usuario, nombre)

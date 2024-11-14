@@ -7,9 +7,9 @@ from .helpers.user.UserModelHelper import extraer_equipos, extraer_horarios
 from .helpers.user.UserDetailsHelper import resultsDetail_to_dict, initUserDetailsModel, asignarHorarios
 from .helpers.user.UserAllInfoHelper import results_allDetails_to_dict, check_existing_user, init_UserAllDetails_model, assing_byId
 
-class TipoEnum(str, enum.Enum):
+class TipoUser(str, enum.Enum):
     admin = "Admin"
-    normal = "Normal"
+    normal = "Trabajador"
     jefe = "Jefe"
 
 
@@ -20,7 +20,7 @@ class TipoEnum(str, enum.Enum):
 
 class User(BaseModel):
     id_usuario: int
-    tipo: TipoEnum
+    tipo: TipoUser
     nombre: str
     email: str
     password: str
@@ -49,7 +49,7 @@ def User_Default_Response(results: List[tuple]) -> List[User]:
 
 class UserBasicDetails(BaseModel):
     id_usuario: int
-    tipo: TipoEnum
+    tipo: TipoUser
     nombre: str
     email: str
     password: str
@@ -85,7 +85,7 @@ def User_Details_Response(user_results: List[tuple]) -> List[UserBasicDetails]:
 
 class UserDetails(BaseModel):
     id_usuario: int
-    tipo: TipoEnum
+    tipo: TipoUser
     nombre: str
     email: str
     password: str
