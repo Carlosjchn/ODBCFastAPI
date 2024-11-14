@@ -162,7 +162,7 @@ async def create_user(
 )
 async def update_user_router(
     id_usuario: int,
-    tipo: str = None,
+    tipo: TipoUser = None,
     nombre: str = None,
     email: str = None,
     password: str = None,

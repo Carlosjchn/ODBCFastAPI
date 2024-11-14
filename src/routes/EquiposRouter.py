@@ -57,7 +57,6 @@ async def get_all_equipos_router():
         200: {"description": "Equipo creado exitosamente."},
         500: {"description": "Error al crear el equipo."},
     },
-    response_model=dict,
 )
 async def create_equipo(
     nombre_equipo: str,
