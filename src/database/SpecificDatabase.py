@@ -123,7 +123,7 @@ class EquiposMethods(GeneralMethods):
     @staticmethod
     async def insert_equipo(equipo_data):
         query = """
-        INSERT INTO equipos (tipo, nombre, horas_inicio_act, horas_fin_act)
+        INSERT INTO equipos (tipo, nombre, horas_inicio_act, hora_fin_act)
         VALUES (?, ?, ?, ?)
         """
         await GeneralMethods.insert_data_async(query, equipo_data)
@@ -142,6 +142,6 @@ class EquiposMethods(GeneralMethods):
     ############# 
     @staticmethod
     async def delete_equipo(equipoId):
-        query = "DELETE FROM equipos WHERE id_equipo = {equipoId}"
+        query = f"DELETE FROM equipos WHERE id_equipo = {equipoId}"
         await GeneralMethods.delete_data_async(query)
         return {"message": "Equipo deleted successfully"}

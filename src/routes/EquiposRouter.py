@@ -1,7 +1,11 @@
 from datetime import date, time
 from fastapi import APIRouter, HTTPException, Query
-
-from ..services.EquipoService import get_all_equipos_service, insert_equipo_service, update_equipo_service
+from ..services.EquipoService import (
+    delete_equipo_service,
+    get_all_equipos_service,
+    insert_equipo_service,
+    update_equipo_service,
+)
 
 router = APIRouter()
 
@@ -9,6 +13,7 @@ router = APIRouter()
 @router.get("/all")
 async def get_all_equipos_router():
     return await get_all_equipos_service()
+
 
 @router.post(
     "/create",
@@ -22,8 +27,12 @@ async def get_all_equipos_router():
 async def create_equipo(
     nombre_equipo: str,
     tipo: str,
-    hora_inicio_actividad: time = Query(..., description="Hora de inicio del equipo (HH:MM:SS)"),
-    hora_fin_actividad: time = Query(..., description="Hora de fin del equipo (HH:MM:SS)")
+    hora_inicio_actividad: time = Query(
+        ..., description="Hora de inicio del equipo (HH:MM:SS)"
+    ),
+    hora_fin_actividad: time = Query(
+        ..., description="Hora de fin del equipo (HH:MM:SS)"
+    ),
 ):
     """
     ---
@@ -43,7 +52,10 @@ async def create_equipo(
     ### Returns:
     - Un mensaje de confirmación indicando si la inserción fue exitosa o si hubo algún error.
     """
-    return await insert_equipo_service(nombre_equipo, tipo, hora_inicio_actividad, hora_fin_actividad)
+    return await insert_equipo_service(
+        nombre_equipo, tipo, hora_inicio_actividad, hora_fin_actividad
+    )
+
 
 @router.put(
     "/update",
@@ -58,8 +70,10 @@ async def update_equipo(
     id_equipo: int = None,
     tipo: str = None,
     nombre: str = None,
-    hora_inicio_act: time = Query(None, description="Hora de inicio del equipo (HH:MM:SS)"),
-    hora_fin_act: time = Query(None, description="Hora de fin del equipo (HH:MM:SS)")
+    hora_inicio_act: time = Query(
+        None, description="Hora de inicio del equipo (HH:MM:SS)"
+    ),
+    hora_fin_act: time = Query(None, description="Hora de fin del equipo (HH:MM:SS)"),
 ):
     """
     Endpoint para actualizar un equipo existente en la base de datos de manera asincrónica.
@@ -74,5 +88,28 @@ async def update_equipo(
     ### Returns:
     - Resultado de la operación, indicando éxito o algún error.
     """
-    return await update_equipo_service(id_equipo, tipo, nombre, hora_inicio_act, hora_fin_act)
+    return await update_equipo_service(
+        id_equipo, tipo, nombre, hora_inicio_act, hora_fin_act
+    )
 
+
+@router.delete(
+    "/delete",
+    summary="Eliminar un equipo",
+    responses={
+        200: {"description": "equipo eliminado exitosamente."},
+        404: {"description": "equipo no encontrado."},
+        500: {"description": "Error al eliminar el equipo."},
+    },
+)
+async def delete_equipo(id_equipo: int):
+    """
+    Endpoint para eliminar un equipo de la base de datos de manera asincrónica.
+
+    ### Parámetros:
+    - **id_equipo** (int): ID del equipo a eliminar.
+
+    ### Returns:
+    - Resultado de la operación, indicando éxito o algún error.
+    """
+    return await delete_equipo_service(id_equipo)

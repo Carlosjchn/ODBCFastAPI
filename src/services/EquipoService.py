@@ -12,12 +12,7 @@ async def get_all_equipos_service():
 # Metodos Post #
 ################
 async def insert_equipo_service(nombre_equipo: str,tipo: str, horas_inicio_act: str, horas_fin_act: str):
-    equipo_data = {
-        "tipo": tipo,
-        "nombre_equipo": nombre_equipo,
-        "horas_inicio_act": horas_inicio_act,
-        "horas_fin_act": horas_fin_act
-    }         
+    equipo_data = (tipo,nombre_equipo,horas_inicio_act,horas_fin_act)         
     return await EquiposMethods.insert_equipo(equipo_data)
 
 ###############
