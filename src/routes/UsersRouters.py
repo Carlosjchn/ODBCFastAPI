@@ -152,36 +152,6 @@ async def create_user(
     return await insert_user_service(tipo, nombre, email, password, id_equipo)
 
 
-@router.delete(
-    "/delete",
-    summary="Eliminar un usuario por su ID o nombre",
-    responses={
-        200: {"description": "Usuario eliminado exitosamente."},
-        400: {"description": "ID de usuario o nombre no válido."},
-        404: {"description": "Usuario no encontrado."},
-        500: {"description": "Error al eliminar el usuario."},
-    },
-)
-async def delete_user_router(id_usuario: int = None, nombre: str = None):
-    """
-    ---
-    Endpoint para eliminar un usuario de la base de datos de manera asincrónica.
-
-    # Flujo del método:\n
-    1. `delete_user_router(id_usuario, nombre)` -> Llama al servicio que elimina al usuario según el ID o nombre proporcionado.\n
-    2. `delete_user_service(id_usuario, nombre)` -> Procesa la solicitud y se comunica con los métodos de la base de datos para eliminar al usuario.\n
-    3. **UserMethods.**`delete_user(id_usuario, nombre)` -> Ejecuta la consulta de eliminación en la base de datos.\n
-    ---
-    ### Parámetros:\n
-    - **id_usuario** (int, optional): ID del usuario que se desea eliminar.\n
-    - **nombre** (str, optional): Nombre del usuario que se desea eliminar.\n
-    ---
-    ### Returns:\n
-    Resultado de la operación, indicando si el usuario fue eliminado con éxito o si hubo algún error.
-    """
-    return await delete_user_service(id_usuario, nombre)
-
-
 @router.put(
     "/update",
     summary="Actualizar los datos de un usuario",
@@ -222,3 +192,31 @@ async def update_user_router(
     """
     return await update_user_service(id_usuario, tipo, nombre, email, password, id_equipo)
 
+@router.delete(
+    "/delete",
+    summary="Eliminar un usuario por su ID o nombre",
+    responses={
+        200: {"description": "Usuario eliminado exitosamente."},
+        400: {"description": "ID de usuario o nombre no válido."},
+        404: {"description": "Usuario no encontrado."},
+        500: {"description": "Error al eliminar el usuario."},
+    },
+)
+async def delete_user_router(id_usuario: int = None, nombre: str = None):
+    """
+    ---
+    Endpoint para eliminar un usuario de la base de datos de manera asincrónica.
+
+    # Flujo del método:\n
+    1. `delete_user_router(id_usuario, nombre)` -> Llama al servicio que elimina al usuario según el ID o nombre proporcionado.\n
+    2. `delete_user_service(id_usuario, nombre)` -> Procesa la solicitud y se comunica con los métodos de la base de datos para eliminar al usuario.\n
+    3. **UserMethods.**`delete_user(id_usuario, nombre)` -> Ejecuta la consulta de eliminación en la base de datos.\n
+    ---
+    ### Parámetros:\n
+    - **id_usuario** (int, optional): ID del usuario que se desea eliminar.\n
+    - **nombre** (str, optional): Nombre del usuario que se desea eliminar.\n
+    ---
+    ### Returns:\n
+    Resultado de la operación, indicando si el usuario fue eliminado con éxito o si hubo algún error.
+    """
+    return await delete_user_service(id_usuario, nombre)

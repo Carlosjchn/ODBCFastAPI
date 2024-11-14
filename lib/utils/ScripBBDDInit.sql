@@ -15,7 +15,7 @@ CREATE TABLE IF NOT EXISTS Equipos (
 -- Crear tabla Usuario
 CREATE TABLE IF NOT EXISTS Usuario (
     id_usuario INT AUTO_INCREMENT PRIMARY KEY,
-    tipo ENUM('Normal', 'Jefe', 'Admin') NOT NULL,
+    tipo ENUM('Trabajador', 'Jefe', 'Admin') NOT NULL,
     nombre VARCHAR(100) NOT NULL,
     email VARCHAR(100) NOT NULL UNIQUE,
     contrasena VARCHAR(255) NOT NULL,
@@ -48,15 +48,15 @@ VALUES
 INSERT INTO Usuario (tipo, nombre, email, contrasena, id_equipo) 
 VALUES 
 ('Admin', 'Carlos Pérez', 'carlos.perez@example.com', 'password123', 1),
-('Normal', 'Ana Gómez', 'ana.gomez@example.com', 'pass456', 2),
-('Normal', 'Luis Torres', 'luis.torres@example.com', 'secret789', 1),
-('Normal', 'María Sánchez', 'maria.sanchez@example.com', 'pass321', 3),
+('Trabajador', 'Ana Gómez', 'ana.gomez@example.com', 'pass456', 2),
+('Trabajador', 'Luis Torres', 'luis.torres@example.com', 'secret789', 1),
+('Trabajador', 'María Sánchez', 'maria.sanchez@example.com', 'pass321', 3),
 ('Admin', 'Raúl Ortega', 'raul.ortega@example.com', 'password456', 4),
-('Normal', 'Sofía Navarro', 'sofia.navarro@example.com', 'mypassword123', 2),
-('Normal', 'Javier Ruiz', 'javier.ruiz@example.com', 'secure456', 5),
-('Normal', 'Elena Martínez', 'elena.martinez@example.com', 'secretpass', 6),
-('Normal', 'Ricardo López', 'ricardo.lopez@example.com', 'topsecret789', 3),
-('Normal', 'Natalia Vargas', 'natalia.vargas@example.com', 'vargas456', 4);
+('Trabajador', 'Sofía Navarro', 'sofia.navarro@example.com', 'mypassword123', 2),
+('Trabajador', 'Javier Ruiz', 'javier.ruiz@example.com', 'secure456', 5),
+('Trabajador', 'Elena Martínez', 'elena.martinez@example.com', 'secretpass', 6),
+('Trabajador', 'Ricardo López', 'ricardo.lopez@example.com', 'topsecret789', 3),
+('Trabajador', 'Natalia Vargas', 'natalia.vargas@example.com', 'vargas456', 4);
 
 -- Insertar datos en la tabla Horarios
 INSERT INTO Horarios (id_usuario, fecha, hora_inicio, hora_fin) 

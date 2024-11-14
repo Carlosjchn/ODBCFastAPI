@@ -5,10 +5,11 @@ from .helpers.fetch.FetchUserHelper import (
     get_response_processor,
 )
 
+
+
 #########################
 # Metodos para Usuarios #
 #########################
-
 class UserMethods(GeneralMethods):
     
     ############
@@ -60,8 +61,6 @@ class UserMethods(GeneralMethods):
 #########################
 # Metodos para Horarios #
 #########################
-
-
 class HorariosMethods(GeneralMethods):
     
     ############
@@ -79,9 +78,9 @@ class HorariosMethods(GeneralMethods):
     #############
     async def insert_horario(horario_data):
         query = """
-        INSERT INTO horarios (id_usuario, fecha, hora_inicio, hora_fin)
-        VALUES (:id_usuario, :fecha, :hora_inicio, :hora_fin)
-        """
+            INSERT INTO horarios (id_usuario, fecha, hora_inicio, hora_fin)
+            VALUES (?, ?, ?, ?)
+            """
         await GeneralMethods.insert_data_async(query, horario_data)
         return {"message": "Horario inserted successfully"}
 
@@ -89,14 +88,8 @@ class HorariosMethods(GeneralMethods):
     #  UPDATES  #
     #############
     @staticmethod
-    async def update_horario(horarioId, horario_data):
-        query = """
-        UPDATE horarios
-        SET id_usuario = :id_usuario, fecha = :fecha, hora_inicio = :hora_inicio, hora_fin = :hora_fin
-        WHERE id_horario = :id_horario
-        """
-        horario_data["id_horario"] = horarioId
-        await GeneralMethods.update_data_async(query, horario_data)
+    async def update_horario(query):
+        await GeneralMethods.update_data_async(query)
         return {"message": "Horario updated successfully"}
     
     #############
@@ -104,15 +97,15 @@ class HorariosMethods(GeneralMethods):
     ############# 
     @staticmethod
     async def delete_horario(horarioId):
-        query = "DELETE FROM horarios WHERE id_horario = :id_horario"
-        await GeneralMethods.delete_data_async(query, {"id_horario": horarioId})
+        query = f"DELETE FROM horarios WHERE id_horario = {horarioId}"
+        await GeneralMethods.delete_data_async(query)
         return {"message": "Horario deleted successfully"}
+    
+    
     
 ########################
 # Metodos para Equipos #
 ########################
-
-
 class EquiposMethods(GeneralMethods):
     
     ############
@@ -130,8 +123,8 @@ class EquiposMethods(GeneralMethods):
     @staticmethod
     async def insert_equipo(equipo_data):
         query = """
-        INSERT INTO equipos (nombre_equipo, descripcion, horas_inicio_act, horas_fin_act)
-        VALUES (:nombre_equipo, :descripcion, :horas_inicio_act, :horas_fin_act)
+        INSERT INTO equipos (tipo, nombre, horas_inicio_act, horas_fin_act)
+        VALUES (?, ?, ?, ?)
         """
         await GeneralMethods.insert_data_async(query, equipo_data)
         return {"message": "Equipo inserted successfully"}
@@ -140,14 +133,8 @@ class EquiposMethods(GeneralMethods):
     #  UPDATES  #
     #############
     @staticmethod
-    async def update_equipo(equipoId, equipo_data):
-        query = """
-        UPDATE equipos
-        SET nombre_equipo = :nombre_equipo, descripcion = :descripcion, horas_inicio_act = :horas_inicio_act, horas_fin_act = :horas_fin_act
-        WHERE id_equipo = :id_equipo
-        """
-        equipo_data["id_equipo"] = equipoId
-        await GeneralMethods.update_data_async(query, equipo_data)
+    async def update_equipo(query):
+        await GeneralMethods.update_data_async(query)
         return {"message": "Equipo updated successfully"}
     
     #############
@@ -155,6 +142,6 @@ class EquiposMethods(GeneralMethods):
     ############# 
     @staticmethod
     async def delete_equipo(equipoId):
-        query = "DELETE FROM equipos WHERE id_equipo = :id_equipo"
-        await GeneralMethods.delete_data_async(query, {"id_equipo": equipoId})
+        query = "DELETE FROM equipos WHERE id_equipo = {equipoId}"
+        await GeneralMethods.delete_data_async(query)
         return {"message": "Equipo deleted successfully"}
