@@ -13,14 +13,14 @@
 ---
 ## INICIAR EL PROYECTO:
 
-Moverse a la carpeta ***JDBCFastAPI***:
+Moverse a la carpeta ***ODBCFastAPI***:
 
 ```
-cd JDBCFastAPI
+cd ODBCFastAPI
 ```
 ***Ejemplo ruta correcta:***
 
-**PS D:\Programacion\Python Projects\JDBCFastAPI>**
+**PS D:\Programacion\Python Projects\ODBCFastAPI>**
 
 Una vez en la ruta instalar dependencias del proyecto, usando : 
 ```
